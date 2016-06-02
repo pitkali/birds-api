@@ -17,6 +17,7 @@ def add_default_fields(item):
         item[VISIBLE_KEY] = False
     if not ADDED_KEY in item:
         item[ADDED_KEY] = time.strftime("%Y-%m-%d", time.gmtime())
+    return item
 
 
 class StorageEngine(object):
@@ -44,6 +45,15 @@ class StorageEngine(object):
         and it results in true value."""
         raise NotImplementedError
 
+    def parse_oid(self, item_id):
+        """Parses potentially stringified ObjectID."""
+        if isinstance(item_id, str):
+            try:
+                return ObjectId(item_id)
+            except InvalidId:
+                pass
+        return item_id
+
 
 class MemoryStorage(StorageEngine):
     """In-memory storage engine.
@@ -51,32 +61,22 @@ class MemoryStorage(StorageEngine):
     Stores objects in memory without persistence. Mostly useful for testing."""
 
     def __init__(self):
-        self.next_id = 1
         self.database = {}
 
     def store(self, item):
         add_default_fields(item)
-        item_id = self.next_id
+        item_id = ObjectId()
         item[ID_KEY] = item_id
-        self.next_id += 1
         self.database[item_id] = item
         return item_id
 
-    def parse_id(self, item_id):
-        if isinstance(item_id, str):
-            try:
-                return int(item_id)
-            except:
-                return -1
-        return item_id
-
     def retrieve(self, item_id):
-        item = self.database.get(self.parse_id(item_id))
+        item = self.database.get(self.parse_oid(item_id))
         return copy.deepcopy(item) if item else None
 
     def remove(self, item_id):
         """Removes indicated item. Raises KeyError if it's missing."""
-        del self.database[self.parse_id(item_id)]
+        del self.database[self.parse_oid(item_id)]
 
     def list(self):
         """Generates sequence of visible items."""
@@ -91,16 +91,8 @@ class MongoStorage(StorageEngine):
     def __init__(self, collection):
         self.collection = collection
 
-    def parse_id(self, item_id):
-        if isinstance(item_id, str):
-            try:
-                return ObjectId(item_id)
-            except InvalidId:
-                pass
-        return item_id
-
     def retrieve(self, item_id):
-        item = self.collection.find_one(self.parse_id(item_id))
+        item = self.collection.find_one(self.parse_oid(item_id))
         if item:
             item[ID_KEY] = item["_id"]
         return item
@@ -111,7 +103,7 @@ class MongoStorage(StorageEngine):
             yield item["_id"]
 
     def remove(self, item_id):
-        result = self.collection.delete_one({"_id" : self.parse_id(item_id)})
+        result = self.collection.delete_one({"_id" : self.parse_oid(item_id)})
         if result.deleted_count == 0:
             raise KeyError(item_id)
 
