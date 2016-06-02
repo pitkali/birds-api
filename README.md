@@ -17,7 +17,9 @@ virtualenv. To replicate python environment:
 
 You can run a test instance of the application using reference
 implementation of a WSGI server by just running the birds package. It
-requires a default, test, unauthorised MongoDB instance running.
+requires a default, test, unauthorised MongoDB instance running, like
+the one you would get by launching default configuration after
+installing it with homebrew on a Mac.
 
 1. Make sure you are in the repository top-level directory.
 2. Run: `python -m birds`
