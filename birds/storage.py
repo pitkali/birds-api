@@ -35,7 +35,7 @@ class StorageEngine(object):
         raise NotImplementedError
 
     def remove(self, item_id):
-        """Removes indicated item. Raises KeyError if it's missing."""
+        """Removes indicated item. Returns False if item_id is unknown."""
         raise NotImplementedError
 
     def list(self):
@@ -76,7 +76,11 @@ class MemoryStorage(StorageEngine):
 
     def remove(self, item_id):
         """Removes indicated item. Raises KeyError if it's missing."""
+        parsed_id = self.parse_oid(item_id)
+        if not parsed_id in self.database:
+            return False
         del self.database[self.parse_oid(item_id)]
+        return True
 
     def list(self):
         """Generates sequence of visible items."""
@@ -104,8 +108,7 @@ class MongoStorage(StorageEngine):
 
     def remove(self, item_id):
         result = self.collection.delete_one({"_id" : self.parse_oid(item_id)})
-        if result.deleted_count == 0:
-            raise KeyError(item_id)
+        return False if result.deleted_count == 0 else True
 
     def store(self, item):
         add_default_fields(item)

@@ -104,11 +104,12 @@ class BirdResource(object):
         resp.status = falcon.HTTP_200
 
     def on_delete(self, req, resp, bird_id):
+        removed = False
         try:
-            self.storage.remove(bird_id)
-        except KeyError:
-            raise falcon.HTTPNotFound()
+            removed = self.storage.remove(bird_id)
         except Exception as ex:
             self.logger.exception(ex)
             service_outage()
+        if not removed:
+            raise falcon.HTTPNotFound
         resp.status = falcon.HTTP_200

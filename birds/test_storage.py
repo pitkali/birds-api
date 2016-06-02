@@ -92,13 +92,13 @@ class StorageTest(unittest.TestCase):
         item_id = str(self.storage.store(item))
         self.assertTrue(is_same_dictionary(
             self.storage.retrieve(item_id), item))
-        self.storage.remove(item_id)
+        self.assertTrue(self.storage.remove(item_id))
 
     def test_store_remove(self):
         self.assertEqual(len(self.list()), 0)
         item_id = self.storage.store(visible_item())
         self.assertEqual(len(self.list()), 1)
-        self.storage.remove(item_id)
+        self.assertTrue(self.storage.remove(item_id))
         self.assertIsNone(self.storage.retrieve(item_id))
         self.assertEqual(len(self.list()), 0)
 
@@ -120,8 +120,8 @@ class StorageTest(unittest.TestCase):
         self.assertIsNone(self.storage.retrieve("I'm so random"))
 
     def test_remove_missing(self):
-        with self.assertRaises(KeyError):
-            self.storage.remove("These are not the robots you're looking for")
+        self.assertFalse(
+            self.storage.remove("These are not the robots you're looking for"))
 
 
 class MemoryStorageTest(StorageTest):
