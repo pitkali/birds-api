@@ -27,7 +27,7 @@ Add bird
 
 ### Request `POST /birds`
 
-The body is a JSON object based on the JSON schema can be found in
+The body is a JSON object based on the JSON schema found in
 `post-birds-request.json`.
 
  - If `visible` is not set, it should default to `false`.
@@ -41,7 +41,7 @@ Valid status codes:
  - `400 Bad request` if any mandatory fields were missing or if the
    input JSON was invalid
 
-The body is a JSON object based on the JSON schema can be found in
+The body is a JSON object based on the JSON schema found in
 `post-birds-response.json`.
 
 List all birds
@@ -57,7 +57,7 @@ Valid status codes:
 
  - `200 OK`
 
-The body is a JSON array based on the JSON schema can be found in
+The body is a JSON array based on the JSON schema found in
 `get-birds-response.json`.
 
 Get bird by id
