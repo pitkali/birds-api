@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "POST /birds [request]",
+  "title": "POST /birds [response]",
   "description": "Add a new bird to the library",
   "type": "object",
   "required": [

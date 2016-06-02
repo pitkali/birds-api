@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "POST /birds [request]",
+  "title": "GET /birds [response]",
   "description": "List all visible birds in the registry",
   "type": "array",
   "additionalProperties": false,

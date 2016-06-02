@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "POST /birds [request]",
+  "title": "GET /birds/{id} [response]",
   "description": "Get bird by id",
   "type": "object",
   "required": [
