@@ -121,7 +121,7 @@ class StorageTest(unittest.TestCase):
 
     def test_remove_missing(self):
         self.assertFalse(
-            self.storage.remove("These are not the robots you're looking for"))
+            self.storage.remove("These are not the droids you're looking for"))
 
 
 class MemoryStorageTest(StorageTest):
