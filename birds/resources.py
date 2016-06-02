@@ -24,6 +24,11 @@ EXPOSED_BIRD_ATTRIBUTES = ["id",
 def filter_dictionary(d, allowed_keys):
     return {k : v for k, v in d.items() if k in allowed_keys}
 
+def dump_bird(bird):
+    exposed_bird = filter_dictionary(bird, EXPOSED_BIRD_ATTRIBUTES)
+    exposed_bird["id"] = str(exposed_bird["id"])
+    return json.dumps(exposed_bird)
+
 
 class BirdCollection(object):
     def __init__(self, storage):
@@ -75,8 +80,7 @@ class BirdCollection(object):
             self.logger.exception(ex)
             service_outage()
 
-        #resp.body = json.dumps(filter_dictionary(
-        #    bird, EXPOSED_BIRD_ATTRIBUTES))
+        resp.body = dump_bird(bird)
         resp.status = falcon.HTTP_201
         resp.location = "/birds/" + str(bird_id)
 
@@ -96,8 +100,7 @@ class BirdResource(object):
             service_outage()
         if bird is None:
             raise falcon.HTTPNotFound()
-        resp.body = json.dumps(filter_dictionary(
-            bird, EXPOSED_BIRD_ATTRIBUTES))
+        resp.body = dump_bird(bird)
         resp.status = falcon.HTTP_200
 
     def on_delete(self, req, resp, bird_id):
